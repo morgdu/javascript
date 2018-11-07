@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+canvas {
+    border:1px solid #d3d3d3;
+    background-color: #f1f1f1;
+}
+</style>
+</head>
+<body onload="startGame()">
+<script>
+
+var myGamePiece;
+
+function startGame() {
+    myGamePiece = new component(20, "red", 10, 120);
+    myGameArea.start();
+}
+
+var myGameArea = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.width = 800;
+        this.canvas.height = 500;
+        this.canvas.style.cursor = "none"; //hide the original cursor
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.interval = setInterval(updateGameArea, 20);
+        window.addEventListener('mousemove', function (e) {
+            myGameArea.x = e.pageX;
+            myGameArea.y = e.pageY;
+        })
+        window.addEventListener('keydown', function (e) {
+            myGameArea.key = e.keyCode;
+        })
+        window.addEventListener('keyup', function (e) {
+            myGameArea.key = false;
+        })
+    }, 
+    clear : function(){
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+}
+function component(width, color, x, y) {
+    this.width = width;
+    this.speedX = 0;
+    this.speedY = 0;    
+    this.x = x;
+    this.y = y;    
+    this.update = function() {
+    ctx = myGameArea.context;
+    if (myGameArea.key && myGameArea.key == 71) {color = "green";}
+    if (myGameArea.key && myGameArea.key == 66) {color = "blue";}
+    if (myGameArea.key && myGameArea.key == 89) {color = "yellow";}
+    if (myGameArea.key && myGameArea.key == 82) {color = "red";}
+
+    if (myGameArea.key && myGameArea.key == 40) {
+        if (this.width > 2) {
+        this.width = this.width - 2;}
+    }
+    if (myGameArea.key && myGameArea.key == 38) {this.width = this.width + 2;}
+
+    ctx.fillStyle = color;
+    ctx.beginPath();
+	ctx.arc(this.x, this.y, this.width,0,2*Math.PI);
+	ctx.fill();
+    }
+}
+
+function updateGameArea() {
+    if (myGameArea.key && myGameArea.key == 32) {myGameArea.clear();}
+    if (myGameArea.x && myGameArea.y) {
+        myGamePiece.x = myGameArea.x;
+        myGamePiece.y = myGameArea.y;        
+    }
+    myGamePiece.update();
+
+    if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -1; }
+}
+</script>
+<p>Move the cursor inside the canvas to move the pen.<br>
+Press the up or down arrow to change the size of the pen.<br>
+Press r to change color to red.<br>
+Press y to change color to yellow.<br>
+Press g to change color to green.<br>
+Press b to change color to blue.</p>
+</body>
+</html>
